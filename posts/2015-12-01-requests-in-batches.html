@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>stylefruits tech: Requests in Batches</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href='/fonts/fonts.css' rel='stylesheet' type='text/css'>
+  <style type='text/css'>
+
+html {
+  margin: 0 auto;
+  max-width: 45em;
+  width: 95%;
+  overflow-x: hidden;
+  font-size: 13pt;
+  font-family: 'PT Serif', serif;
+  color: #485c64;
+}
+
+a {
+  color: #AE2431;
+}
+
+section.preview {
+  padding-bottom: 2em;
+}
+
+section.preview img {
+  width: 100%;
+}
+
+section.preview h1 a {
+  text-decoration: none;
+  color: #485c64;
+}
+
+section.preview section.continue {
+  width: 100%;
+  text-align: right;
+}
+
+article img {
+  width: 150%;
+  margin: 0 -25%;
+}
+
+footer {
+  margin: 3em 0 2em;
+  background: url("/img/lambda.svg") no-repeat;
+  background-position: 50% 80%;
+  background-size: 1.5em;
+}
+
+footer > a {
+  display: block;
+  margin: 0 auto;
+  height: 2em;
+  width: 2em;
+}
+
+h1 {
+  text-align: center;
+  margin: 1em 0 0.5em;
+}
+
+section.by, aside.image-attr, section.at {
+  color: #888888;
+  text-align: center;
+  font-style: italic;
+  margin: 0 auto 1em;
+}
+
+header {
+  background: url("/img/logo.svg") no-repeat;
+  background-size: contain;
+  max-width: 24em;
+  width: 90%;
+  margin: 2em auto 1em;
+  height: 3em;
+}
+
+@media (min-width:360px) {
+  header {
+    margin: 3em auto 1em;
+    height: 5em;
+  }
+}
+
+header a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+header a span {
+  display: none;
+}
+
+section.tldr {
+  background: url("/img/tldr.svg") no-repeat;
+  background-size: 5em;
+  background-position: 0 1em;
+  padding: 2.7em 0 0 0;
+  color: #888888;
+  border: solid 1px #cccccc;
+  border-left: none;
+  border-right: none;
+  min-height: 4em;
+}
+
+@media (min-width:550px) {
+  section.tldr {
+    background-position: 0 1.4em;
+    padding: 0 0 0 6em;
+    margin: 0 3em 0 3em;
+  }
+}
+
+label {
+  font-style: italic;
+  text-align: center;
+  padding-top: 0.5em;
+  display: block;
+  color: #888888;
+  font-size: small;
+}
+
+@media (min-width:600px) {
+  label {
+    margin: 0 3em 0 3em;
+    font-size: medium;
+  }
+}
+
+pre, code {
+  font-family: Inconsolata, monospace;
+}
+
+pre {
+  border: solid 1px #cccccc;
+  border-left: none;
+  border-right: none;
+  padding: 1em 0 1em 0;
+  font-size: small;
+}
+
+@media (min-width:600px) {
+  pre {
+    margin: 0 3em 0 3em;
+    font-size: medium;
+  }
+}
+
+pre {
+  color: #888888;
+}
+
+pre .kd {
+  color: #AE2431;
+  font-weight: 600;
+}
+
+pre .s, pre .s2, pre .nt, pre .mf, pre .mi {
+  color: #AE2431;
+}
+
+pre .p, pre .nb, pre .nv {
+  color: #485c64;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/index.html">
+      <span>
+        stylefruits tech
+      </span>
+    </a>
+  </header>
+
+  
+<article>
+  <img class="banner"
+     src="https://zugspitzbahn.stylefruits.de/v1/images/3843fa0b-ffa1-424c-8f3d-47a13384d774"
+     alt="Batch of Firewood by kayakaya (CC BY-SA 2.0)"
+     title="Batch of Firewood by kayakaya (CC BY-SA 2.0)"/>
+<h1>Requests in Batches</h1>
+<section class="by">
+  by <a href="https://twitter.com/janstepien">Jan Stępień</a>,
+  an&nbsp;engineer at&nbsp;stylefruits
+</section>
+<section class="tldr">
+  <p>
+  Rib—which stands for “Requests in Batches”—executes batches of inter-dependent HTTP requests, with automagical parallelisation included.
+  </p>
+</section>
+<section>
+  
+  <p>2015 has been a mobile year at stylefruits. Not long ago the primary mean of interaction with our platform was our web application. These days seem to be over; nowadays members of our community are more and more likely to connect with stylefruits through our mobile applications.</p><p>The trend towards mobile has changed the way we design our systems. Communication is no longer simple request–response cycles. stylefruits has become a distributed system; mobile devices interact with multiple backend systems responsible for delivering and processing data per customers' requests.</p><p>The transition has posed new challenges. Reliable connections between mobile applications and our online services are not something we can take for granted. Latency is unpredictable and every HTTP request counts.</p><p>As our mobile applications were becoming richer finding a solution to connectivity and latency problems was more and more pressing. New features added to apps introduced more HTTP requests to our <a href='https://vimeo.com/139254964'>RESTful API</a>. Applications have been becoming more complex and more fragile.</p><p>A potential solution to those problems could have been introducing feature-specific API endpoints. They'd serve all data necessary to render a given view in mobile apps in a single go, significantly reducing HTTP traffic. After careful consideration we've abandoned that idea. We valued our simple API endpoints specialised in serving one kind of data. We wanted to keep it this way. Instead, we sought for a solution allowing us to compose base ingredients which we already had.</p><h2><a name="on&#95;a&#95;quest&#95;for&#95;smaller&#95;latency"></a>On a quest for smaller latency</h2><p>Authors of HTTP were trying to reduce the cost of sending multiple requests since nascent days of the protocol. One of the improvements introduced in HTTP/1.1 was support for persistent connections. The new mechanism enabled peers to reuse established TCP connections for multiple requests. Persistent connections along with <a href='https://en.wikipedia.org/w/index.php?title=HTTP_pipelining&oldid=684319633'>HTTP pipelining</a> significantly reduced the overall time executing multiple requests took. However, as <a href='https://en.wikipedia.org/w/index.php?title=Sprite_%28computer_graphics%29&oldid=685988023#Sprites&#95;by&#95;CSS'>CSS spriting</a> demonstrates, it's not always enough.</p><p>Considering existing solutions unsatisfactory, Snell proposed a new format allowing <a href='https://tools.ietf.org/html/draft-snell-http-batch-01'>batching multiple requests in a single multipart MIME payload</a>. Snell's goals were allowing clients to mix idempotent and non-idempotent requests, as well as enabling servers to choose an optimal order of processing requests in a batch.</p><p>The multipart MIME payload approach is used in the <a href='http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part1-protocol.html#&#95;Batch&#95;Requests&#95;1'>batch processing mechanism of OData protocol</a>. The protocol is used in practice in, among others, <a href='https://cloud.google.com/storage/docs/json_api/v1/how-tos/batch?hl=en'>Google Cloud Platform JSON API</a>. An interesting mechanism OData batch requests offer is an ability to reference newly created entities in subsequent requests in the same batch. We've found this intriguing.</p><p>Further steps towards reducing latency of HTTP were introduced in the second major version of the protocol. <a href='https://en.wikipedia.org/w/index.php?title=HTTP/2&oldid=685906903'>HTTP/2</a> allows servers to concurrently transfer responses to multiple requests over a single TCP connection. The new protocol has also alleviated the problem of head-of-line blocking HTTP/1.1 suffers from.</p><p>As we were considering those protocol-level solutions we realised that we can go even further. Our advantage was knowledge of what was transmitted between our API and mobile devices. It was all inter-referenced values represented in JSON. This extra bit of information made us look for more specialised solutions.</p><p><a href='http://neo4j.com/docs/2.2.6/rest-api-batch-ops.html'>Neo4j REST API</a> enables clients to batch their JSON requests. Similarly to OData, it allows referring to entities inserted in an earlier request of a batch; in a single batch request you can insert a new person along with information about its relationship to another entity in the data base.</p><p>As we kept looking for other ideas we stumbled upon <a href='https://developers.facebook.com/docs/graph-api/making-multiple-requests'>Facebook's Graph API batching protocol</a>. It takes the Neo4j approach a step further; it allows referring to results of previous requests but doesn't limit them to requests which alter data. It also uses <a href='http://goessner.net/articles/JsonPath/'>JSONPath</a> to declare relations between dependent requests.</p><p>At this point we felt we found what we wanted. We found Facebook's approach the best way to introduce composition into our API. Having a general idea in mind we moved on to its implementation.</p><h2><a name="introducing&#95;rib"></a>Introducing Rib</h2><p>We decided that introducing the request batching endpoint directly into our existing API isn't the best solution. We didn't want to couple the new mechanism to any service we already had. Instead, we implemented it as a separate HTTP service acting as a façade between our mobile clients and our API. We've named it Rib, which stands for <i>Requests in batches</i>.</p><p>The new service exposes a single HTTP endpoint: <code>POST /batch</code>. Clients send a JSON document which specifies a batch of requests to send; Rib executes them and returns a JSON payload with all the responses.</p><p>Let's see how working with Rib looks like by pretending it's acting as a proxy in front of <a href='https://developer.github.com/v3/'>GitHub's API</a>. We'll start with a simple batch consisting of a single request.</p><div class="highlight"><pre><span class="p">[{</span><span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/xsc&quot;</span><span class="p">,</span> <span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span><span class="p">}]</span>
+</pre></div>
+<p>When we <code>POST</code> it to <code>/batch</code> it results in a collection of responses, including both bodies and headers.</p><div class="highlight"><pre><span class="p">{</span>
+&#32;&#32;<span class="nt">&quot;time&#95;taken&quot;</span><span class="p">:</span> <span class="mf">120.797</span><span class="p">,</span>
+&#32;&#32;<span class="nt">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span>
+&#32;&#32;&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;response&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;time&#95;taken&quot;</span><span class="p">:</span> <span class="mf">120.38</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;cache-control&quot;</span><span class="p">:</span> <span class="s2">&quot;public, max-age=60, s-maxage=60&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;Wed, 21 Oct 2015 09:44:49 GMT&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="err">...</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;body&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;login&quot;</span><span class="p">:</span> <span class="s2">&quot;xsc&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">198072</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.github.com/users/xsc&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;html&#95;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/xsc&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;repos&#95;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.github.com/users/xsc/repos&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;created&#95;at&quot;</span><span class="p">:</span> <span class="s2">&quot;2010-02-05T22:29:31Z&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;updated&#95;at&quot;</span><span class="p">:</span> <span class="s2">&quot;2015-09-22T10:31:26Z&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="err">...</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/xsc&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;<span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+<p>Similarly, we can send two requests in a single batch.</p><div class="highlight"><pre><span class="p">[</span>
+&#32;&#32;<span class="p">{</span><span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/xsc&quot;</span><span class="p">,</span> <span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span><span class="p">},</span>
+&#32;&#32;<span class="p">{</span><span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/Leonidas-from-XIV&quot;</span><span class="p">,</span> <span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+<p>The result is:</p><div class="highlight"><pre><span class="p">{</span>
+&#32;&#32;<span class="nt">&quot;time&#95;taken&quot;</span><span class="p">:</span> <span class="mf">318.071</span><span class="p">,</span>
+&#32;&#32;<span class="nt">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span>
+&#32;&#32;&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;response&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;time&#95;taken&quot;</span><span class="p">:</span> <span class="mf">317.447</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="err">...</span> <span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;body&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;login&quot;</span><span class="p">:</span> <span class="s2">&quot;xsc&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">198072</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.github.com/users/xsc&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="err">...</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/xsc&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;response&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;time&#95;taken&quot;</span><span class="p">:</span> <span class="mf">203.874</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="err">...</span> <span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;body&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;login&quot;</span><span class="p">:</span> <span class="s2">&quot;Leonidas-from-XIV&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">121531</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.github.com/users/Leonidas-from-XIV&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="err">...</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/Leonidas-from-XIV&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;<span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+<p>Take note of values of <code>time&#95;taken</code> fields; the total execution time is shorter than the sum of execution time of two batched requests. Rib executes independent requests concurrently.</p><h2><a name="rib&#95;understands&#95;dependence"></a>Rib understands dependence</h2><p>What we've showed so far could have been achieved with existing solutions we discussed above. Requests could have been pipelined with a standard HTTP mechanism, or sent in a MIME multipart request. However, what Rib excels at are dependent requests.</p><p>Let's take a look at another example. Let's fetch user's repositories by firstly fetching the user itself and then fetching the endpoint specified in the <code>repos&#95;url</code> field.</p><div class="highlight"><pre><span class="p">[</span>
+&#32;&#32;<span class="p">{</span><span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/xsc&quot;</span><span class="p">,</span> <span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span><span class="p">,</span> <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">},</span>
+&#32;&#32;<span class="p">{</span><span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;{result=user:$.repos&#95;url}&quot;</span><span class="p">,</span> <span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+<p>Upon seeing the <code>{result=user:$.repos&#95;url}</code> expression Rib will replace it with a value returned by looking up <code>$.repos&#95;url</code> in a JSON document fetched by the request named <code>user</code>.</p><p>The response is:</p><div class="highlight"><pre><span class="p">{</span>
+&#32;&#32;<span class="nt">&quot;time&#95;taken&quot;</span><span class="p">:</span> <span class="mf">401.518</span><span class="p">,</span>
+&#32;&#32;<span class="nt">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span>
+&#32;&#32;&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;response&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="err">...</span> <span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/xsc&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;response&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;time&#95;taken&quot;</span><span class="p">:</span> <span class="mf">255.926</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="err">...</span> <span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;body&quot;</span><span class="p">:</span> <span class="p">[</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">10091725</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;pandect&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;full&#95;name&quot;</span><span class="p">:</span> <span class="s2">&quot;xsc/pandect&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;owner&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;login&quot;</span><span class="p">:</span> <span class="s2">&quot;xsc&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">198072</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="err">...</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;languages&#95;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.github.com/repos/xsc/pandect/languages&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="err">...</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="err">...</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">]</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/xsc/repos&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;<span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+<p>In the body of the second response we get an array of repositories. Let's fetch a list of languages for all these repositories. We'll use Rib's dependent requests again.</p><div class="highlight"><pre><span class="p">[</span>
+&#32;&#32;<span class="p">{</span><span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/xsc&quot;</span><span class="p">,</span> <span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span><span class="p">,</span> <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">},</span>
+&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;<span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;{result=user:$.repos&#95;url}?page=1&amp;per&#95;page=10&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;<span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;repos&quot;</span>
+&#32;&#32;<span class="p">},</span>
+&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;<span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;{result=repos:$[*].languages&#95;url}&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;<span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;lang&quot;</span>
+&#32;&#32;<span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+<p>We've added another layer of dependence. The third request in this batch will be executed for every value obtained by looking up <code>$&#91;&#42;&#93;.languages&#95;url</code> in the response to the second request. This results in:</p><div class="highlight"><pre><span class="p">{</span>
+&#32;&#32;<span class="nt">&quot;time&#95;taken&quot;</span><span class="p">:</span> <span class="mf">934.896</span><span class="p">,</span>
+&#32;&#32;<span class="nt">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span>
+&#32;&#32;&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;response&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="err">...</span> <span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/xsc&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;response&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="err">...</span> <span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/users/xsc/repos?page=1&amp;per&#95;page=10&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;repos&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;response&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;time&#95;taken&quot;</span><span class="p">:</span> <span class="mf">329.73</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="err">...</span> <span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;body&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;Clojure&quot;</span><span class="p">:</span> <span class="mi">50821</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;Shell&quot;</span><span class="p">:</span> <span class="mi">1066</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/repos/xsc/pandect/languages&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;lang&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;<span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;response&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;time&#95;taken&quot;</span><span class="p">:</span> <span class="mf">217.193</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="err">...</span> <span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;body&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;Clojure&quot;</span><span class="p">:</span> <span class="mi">27500</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="p">{</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/repos/xsc/minion/languages&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;lang&quot;</span><span class="p">,</span>
+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;<span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get&quot;</span>
+&#32;&#32;&#32;&#32;&#32;&#32;<span class="p">}</span>
+&#32;&#32;&#32;&#32;<span class="p">},</span>
+&#32;&#32;&#32;&#32;<span class="err">...</span>
+&#32;&#32;<span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+<p>As the attentive reader will notice, some problems we built Rib for could have been addressed with Facebook's <a href='https://github.com/facebook/graphql'>GraphQL</a>. Why then didn't we implement a GraphQL façade for our API? The answer is chronology; when GraphQL was announced Rib was already serving production traffic.</p><h2><a name="the&#95;paint&#95;is&#95;still&#95;wet"></a>The paint is still wet</h2><p>It appears that we've found a solution for our latency problems. Sending a round of requests, waiting for all the responses, extracting data from the returned JSON payloads, and finally executing dependent requests took an unbearably long time. Rib can do all of this in a single go. Automatic parallelisation of independent requests is icing on the cake.</p><p>Rib is still in its early days. We've been running it on production for a couple of months now and we're pleased with results we've seen. We have some initial use cases implemented in terms of batched Rib requests, but we need to collect more data and see how far we can push our new tool.</p><p>As a closing remark, it's worth mentioning that we implemented Rib in Erlang, but that's material for a whole another article. Have an eye on our blog for more on this topic.</p>
+</section>
+
+
+<aside class="image-attr">
+  Header image: <a href="https://www.flickr.com/photos/kayakaya/4332756918/">Batch of Firewood by kayakaya (CC BY-SA 2.0)</a>
+</aside>
+
+<section class="at">
+  Posted on December 1, 2015.
+</section>
+
+</article>
+
+
+  <footer>
+    <a href="/index.html"></a>
+  </footer>
+  </div>
+</body>
+</html>

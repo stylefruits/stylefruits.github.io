@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'PT Serif';
+  src: local('PT Serif'), url('PTF55F_W.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'PT Serif';
+  font-weight: 700;
+  src: local('PT Serif Bold'), url('PTF75F_W.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'PT Serif';
+  font-style: italic;
+  src: local('PT Serif Italic'), url('PTF56F_W.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'PT Serif';
+  font-style: italic;
+  font-weight: 700;
+  src: local('PT Serif Bold Italic'), url('PTF76F_W.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: local('Inconsolata'), url('Inconsolata.otf');
+}
