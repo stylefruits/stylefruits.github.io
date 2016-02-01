@@ -5,7 +5,7 @@
 https://stylefruits.github.io404.html
 </loc>
 <lastmod>
-2015-12-10
+2016-02-01
 </lastmod>
 </url>
 <url>
@@ -13,7 +13,7 @@ https://stylefruits.github.io404.html
 https://stylefruits.github.ioarchives.html
 </loc>
 <lastmod>
-2015-12-10
+2016-02-01
 </lastmod>
 </url>
 <url>
@@ -21,7 +21,7 @@ https://stylefruits.github.ioarchives.html
 https://stylefruits.github.ioindex.html
 </loc>
 <lastmod>
-2015-12-10
+2016-02-01
 </lastmod>
 </url>
 <url>
@@ -29,7 +29,7 @@ https://stylefruits.github.ioindex.html
 https://stylefruits.github.iopages/about.html
 </loc>
 <lastmod>
-2015-12-10
+2016-02-01
 </lastmod>
 </url>
 <url>
@@ -37,7 +37,7 @@ https://stylefruits.github.iopages/about.html
 https://stylefruits.github.iopages/another-page.html
 </loc>
 <lastmod>
-2015-12-10
+2016-02-01
 </lastmod>
 </url>
 <url>
@@ -45,7 +45,15 @@ https://stylefruits.github.iopages/another-page.html
 https://stylefruits.github.ioposts/2015-12-01-requests-in-batches.html
 </loc>
 <lastmod>
-2015-12-10
+2016-02-01
+</lastmod>
+</url>
+<url>
+<loc>
+https://stylefruits.github.ioposts/2016-02-01-rib-goes-open-source.html
+</loc>
+<lastmod>
+2016-02-01
 </lastmod>
 </url>
 <url>
@@ -53,7 +61,7 @@ https://stylefruits.github.ioposts/2015-12-01-requests-in-batches.html
 https://stylefruits.github.iotags.html
 </loc>
 <lastmod>
-2015-12-10
+2016-02-01
 </lastmod>
 </url>
 </urlset>

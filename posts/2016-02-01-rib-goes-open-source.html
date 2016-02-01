@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>stylefruits tech: Rib Goes Open Source</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href='/fonts/fonts.css' rel='stylesheet' type='text/css'>
+  <style type='text/css'>
+
+html {
+  margin: 0 auto;
+  max-width: 45em;
+  width: 95%;
+  overflow-x: hidden;
+  font-size: 13pt;
+  font-family: 'PT Serif', serif;
+  color: #485c64;
+}
+
+a {
+  color: #AE2431;
+}
+
+section.preview {
+  padding-bottom: 2em;
+}
+
+section.preview img {
+  width: 100%;
+}
+
+section.preview h1 a {
+  text-decoration: none;
+  color: #485c64;
+}
+
+section.preview section.continue {
+  width: 100%;
+  text-align: right;
+}
+
+article img {
+  width: 150%;
+  margin: 0 -25%;
+}
+
+footer {
+  margin: 3em 0 2em;
+  background: url("/img/lambda.svg") no-repeat;
+  background-position: 50% 80%;
+  background-size: 1.5em;
+}
+
+footer > a {
+  display: block;
+  margin: 0 auto;
+  height: 2em;
+  width: 2em;
+}
+
+h1 {
+  text-align: center;
+  margin: 1em 0 0.5em;
+}
+
+section.by, aside.image-attr, section.at {
+  color: #888888;
+  text-align: center;
+  font-style: italic;
+  margin: 0 auto 1em;
+}
+
+header {
+  background: url("/img/logo.svg") no-repeat;
+  background-size: contain;
+  max-width: 24em;
+  width: 90%;
+  margin: 2em auto 1em;
+  height: 3em;
+}
+
+@media (min-width:360px) {
+  header {
+    margin: 3em auto 1em;
+    height: 5em;
+  }
+}
+
+header a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+header a span {
+  display: none;
+}
+
+section.tldr {
+  background: url("/img/tldr.svg") no-repeat;
+  background-size: 5em;
+  background-position: 0 1em;
+  padding: 2.7em 0 0 0;
+  color: #888888;
+  border: solid 1px #cccccc;
+  border-left: none;
+  border-right: none;
+  min-height: 4em;
+}
+
+@media (min-width:550px) {
+  section.tldr {
+    background-position: 0 1.4em;
+    padding: 0 0 0 6em;
+    margin: 0 3em 0 3em;
+  }
+}
+
+label {
+  font-style: italic;
+  text-align: center;
+  padding-top: 0.5em;
+  display: block;
+  color: #888888;
+  font-size: small;
+}
+
+@media (min-width:600px) {
+  label {
+    margin: 0 3em 0 3em;
+    font-size: medium;
+  }
+}
+
+pre, code {
+  font-family: Inconsolata, monospace;
+}
+
+pre {
+  border: solid 1px #cccccc;
+  border-left: none;
+  border-right: none;
+  padding: 1em 0 1em 0;
+  font-size: small;
+}
+
+@media (min-width:600px) {
+  pre {
+    margin: 0 3em 0 3em;
+    font-size: medium;
+  }
+}
+
+pre {
+  color: #888888;
+}
+
+pre .kd {
+  color: #AE2431;
+  font-weight: 600;
+}
+
+pre .s, pre .s2, pre .nt, pre .mf, pre .mi {
+  color: #AE2431;
+}
+
+pre .p, pre .nb, pre .nv {
+  color: #485c64;
+}
+  </style>
+  <link rel="alternate" type="application/atom+xml" title="stylefruits tech" href="/feed.xml" />
+</head>
+<body>
+  <header>
+    <a href="/index.html">
+      <span>
+        stylefruits tech
+      </span>
+    </a>
+  </header>
+
+  
+<article>
+  <img class="banner"
+     src="https://zugspitzbahn.stylefruits.de/v1/images/9dd31f13-7ad9-4664-b0cb-075d2b5d9f7d"
+     alt="12/17 Cookies by Cliff Johnson (CC BY-SA 2.0)"
+     title="12/17 Cookies by Cliff Johnson (CC BY-SA 2.0)"/>
+<h1>Rib Goes Open Source</h1>
+<section class="by">
+  by <a href="https://twitter.com/janstepien">Jan Stępień</a>,
+  an&nbsp;engineer at&nbsp;stylefruits
+</section>
+<section class="tldr">
+  <p>
+  Rib is free software now. It's our first service implemented in Erlang
+ and we're super happy about it. Get it and tell us what you think!
+  </p>
+</section>
+<section>
+  
+  <p><a href='http://blog.stylefruits.tech/posts/2015-12-01-requests-in-batches.html'>In a blog post published in December</a> we introduced Rib—our service minimising the number of HTTP requests mobile applications send to our RESTful API. Today we're thrilled to announce the next logical step: <a href='https://github.com/stylefruits/rib'>Rib going open source</a> under terms of Apache License 2.0. Get it right away and see for yourself how easy it is to deploy it in front of any JSON API!</p><p>To lower the barrier to entry we've prepared <a href='https://hub.docker.com/r/stylefruits/rib/'>a lightweight Rib Docker image</a> which can act as a façade in front of an arbitrary backend. Give it a try and make it run in front of GitHub's API by executing:</p><pre><code>docker run -e RIB&#95;BACKEND=https://api.github.com \
+  -d -p 3000:3000 --name rib jstepien/rib
+curl docker:3000/v1/batch -i -d '&#91;{&quot;uri&quot;: &quot;/&quot;, &quot;method&quot;: &quot;get&quot;}&#93;'</code></pre><h2><a name="our&#95;path&#95;to&#95;erlang"></a>Our path to Erlang</h2><p>Rib is implemented in Erlang as <a href='http://www.erlang.org/doc/man/application.html'>an OTP application</a>. In fact, it's the first Erlang project we've deployed to production. Clojure remains our primary language at stylefruits; We've been using the Lisp dialect for over three years now and our experiences have been great.</p><p>That being said, Clojure wasn't always our first language. Our journey began in 2008, with the first version of our platform built atop Ruby on Rails. Four years later we started to gradually <a href='https://www.youtube.com/watch?v=Hv4slaRydRM'>migrate our systems to Clojure</a>. Since that time we've been implementing most of our backend systems as well as selected frontends in Clojure, but we certainly haven't lost our interest in other technologies out there.</p><p>Erlang has been on our radar for quite a while. Modelling concurrent problems with processes sharing no mutable state and communicating through message passing felt like a natural fit. Giving up defensive programming and failing fast—or “letting it crash” as the slogan has it— was something new to us. Early on it felt unnatural, but <a href='http://www.erlang.org/doc/design_principles/sup_princ.html'>supervision trees</a> and ubiquitous pattern matching increased our confidence.</p><p>Rib was the opportunity we were waiting for. The project had been in our backlog for a while and there was no pressure to get it done quickly. Its logic wasn't too complex and we had a margin of error. We were able to risk implementing it in a language and on a platform new to us. In the worst case we'd just redo it in Clojure. Fortunately, the worst case never happened.</p><p>Today we're super happy to release Rib as an open source project. We trust that it will serve you as well as it's been serving us; Since its original deployment it has responded to several million requests of our API's clients. What makes us even more excited about the release is the opportunity to subject our understanding of Erlang to a review of the open source community. After all, we're here to learn and we can't wait to hear from you. Comments, patches and filing issues are more than welcome!</p><p>Cheers!</p>
+</section>
+
+
+<aside class="image-attr">
+  Header image: <a href="https://www.flickr.com/photos/cliff_77/3118244713">12/17 Cookies by Cliff Johnson (CC BY-SA 2.0)</a>
+</aside>
+
+<section class="at">
+  Posted on February 1, 2016.
+</section>
+
+</article>
+
+
+  <footer>
+    <a href="/index.html"></a>
+  </footer>
+  </div>
+</body>
+</html>

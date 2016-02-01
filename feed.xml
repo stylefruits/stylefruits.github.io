@@ -12,11 +12,33 @@ https://stylefruits.github.io
 This blog is awesome
 </description>
 <lastBuildDate>
-Thu, 10 Dec 2015 09:11:26 +0100
+Mon, 01 Feb 2016 16:04:38 +0100
 </lastBuildDate>
 <generator>
 clj-rss
 </generator>
+<item>
+<guid>
+https://stylefruits.github.io/posts/2016-02-01-rib-goes-open-source.html
+</guid>
+<link>
+https://stylefruits.github.io/posts/2016-02-01-rib-goes-open-source.html
+</link>
+<title>
+Rib Goes Open Source
+</title>
+<description>
+&lt;p&gt;&lt;a href='http://blog.stylefruits.tech/posts/2015-12-01-requests-in-batches.html'&gt;In a blog post published in December&lt;/a&gt; we introduced Rib—our service minimising the number of HTTP requests mobile applications send to our RESTful API. Today we're thrilled to announce the next logical step: &lt;a href='https://github.com/stylefruits/rib'&gt;Rib going open source&lt;/a&gt; under terms of Apache License 2.0. Get it right away and see for yourself how easy it is to deploy it in front of any JSON API!&lt;/p&gt;&lt;p&gt;To lower the barrier to entry we've prepared &lt;a href='https://hub.docker.com/r/stylefruits/rib/'&gt;a lightweight Rib Docker image&lt;/a&gt; which can act as a façade in front of an arbitrary backend. Give it a try and make it run in front of GitHub's API by executing:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;docker run -e RIB&amp;#95;BACKEND=https://api.github.com \
+  -d -p 3000:3000 --name rib jstepien/rib
+curl docker:3000/v1/batch -i -d '&amp;#91;{&amp;quot;uri&amp;quot;: &amp;quot;/&amp;quot;, &amp;quot;method&amp;quot;: &amp;quot;get&amp;quot;}&amp;#93;'&lt;/code&gt;&lt;/pre&gt;&lt;h2&gt;&lt;a name=&quot;our&amp;#95;path&amp;#95;to&amp;#95;erlang&quot;&gt;&lt;/a&gt;Our path to Erlang&lt;/h2&gt;&lt;p&gt;Rib is implemented in Erlang as &lt;a href='http://www.erlang.org/doc/man/application.html'&gt;an OTP application&lt;/a&gt;. In fact, it's the first Erlang project we've deployed to production. Clojure remains our primary language at stylefruits; We've been using the Lisp dialect for over three years now and our experiences have been great.&lt;/p&gt;&lt;p&gt;That being said, Clojure wasn't always our first language. Our journey began in 2008, with the first version of our platform built atop Ruby on Rails. Four years later we started to gradually &lt;a href='https://www.youtube.com/watch?v=Hv4slaRydRM'&gt;migrate our systems to Clojure&lt;/a&gt;. Since that time we've been implementing most of our backend systems as well as selected frontends in Clojure, but we certainly haven't lost our interest in other technologies out there.&lt;/p&gt;&lt;p&gt;Erlang has been on our radar for quite a while. Modelling concurrent problems with processes sharing no mutable state and communicating through message passing felt like a natural fit. Giving up defensive programming and failing fast—or “letting it crash” as the slogan has it— was something new to us. Early on it felt unnatural, but &lt;a href='http://www.erlang.org/doc/design_principles/sup_princ.html'&gt;supervision trees&lt;/a&gt; and ubiquitous pattern matching increased our confidence.&lt;/p&gt;&lt;p&gt;Rib was the opportunity we were waiting for. The project had been in our backlog for a while and there was no pressure to get it done quickly. Its logic wasn't too complex and we had a margin of error. We were able to risk implementing it in a language and on a platform new to us. In the worst case we'd just redo it in Clojure. Fortunately, the worst case never happened.&lt;/p&gt;&lt;p&gt;Today we're super happy to release Rib as an open source project. We trust that it will serve you as well as it's been serving us; Since its original deployment it has responded to several million requests of our API's clients. What makes us even more excited about the release is the opportunity to subject our understanding of Erlang to a review of the open source community. After all, we're here to learn and we can't wait to hear from you. Comments, patches and filing issues are more than welcome!&lt;/p&gt;&lt;p&gt;Cheers!&lt;/p&gt;
+</description>
+<enclosure>
+
+</enclosure>
+<pubDate>
+Mon, 01 Feb 2016 00:00:00 +0100
+</pubDate>
+</item>
 <item>
 <guid>
 https://stylefruits.github.io/posts/2015-12-01-requests-in-batches.html
@@ -223,7 +245,7 @@ Requests in Batches
 &amp;#32;&amp;#32;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;As the attentive reader will notice, some problems we built Rib for could have been addressed with Facebook's &lt;a href='https://github.com/facebook/graphql'&gt;GraphQL&lt;/a&gt;. Why then didn't we implement a GraphQL façade for our API? The answer is chronology; when GraphQL was announced Rib was already serving production traffic.&lt;/p&gt;&lt;h2&gt;&lt;a name=&quot;the&amp;#95;paint&amp;#95;is&amp;#95;still&amp;#95;wet&quot;&gt;&lt;/a&gt;The paint is still wet&lt;/h2&gt;&lt;p&gt;It appears that we've found a solution for our latency problems. Sending a round of requests, waiting for all the responses, extracting data from the returned JSON payloads, and finally executing dependent requests took an unbearably long time. Rib can do all of this in a single go. Automatic parallelisation of independent requests is icing on the cake.&lt;/p&gt;&lt;p&gt;Rib is still in its early days. We've been running it on production for a couple of months now and we're pleased with results we've seen. We have some initial use cases implemented in terms of batched Rib requests, but we need to collect more data and see how far we can push our new tool.&lt;/p&gt;&lt;p&gt;As a closing remark, it's worth mentioning that we implemented Rib in Erlang, but that's material for a whole another article. Have an eye on our blog for more on this topic.&lt;/p&gt;
+&lt;p&gt;As the attentive reader will notice, some problems we built Rib for could have been addressed with Facebook's &lt;a href='https://github.com/facebook/graphql'&gt;GraphQL&lt;/a&gt;. Why then didn't we implement a GraphQL façade for our API? The answer is chronology; when GraphQL was announced Rib was already serving production traffic.&lt;/p&gt;&lt;h2&gt;&lt;a name=&quot;the&amp;#95;paint&amp;#95;is&amp;#95;still&amp;#95;wet&quot;&gt;&lt;/a&gt;The paint is still wet&lt;/h2&gt;&lt;p&gt;It appears that we've found a solution for our latency problems. Sending a round of requests, waiting for all the responses, extracting data from the returned JSON payloads, and finally executing dependent requests took an unbearably long time. Rib can do all of this in a single go. Automatic parallelisation of independent requests is icing on the cake.&lt;/p&gt;&lt;p&gt;Rib is still in its early days. We've been running it on production for a couple of months now and we're pleased with results we've seen. We have some initial use cases implemented in terms of batched Rib requests, but we need to collect more data and see how far we can push our new tool.&lt;/p&gt;&lt;p&gt;As a closing remark, it's worth mentioning that we implemented Rib in Erlang, but that's material for a whole another article. Have an eye on our blog for more on this topic.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Update (2016-01-15):&lt;/strong&gt; We &lt;a href='http://blog.stylefruits.tech/posts/2016-01-15-rib-goes-open-source.html'&gt;released Rib&lt;/a&gt; as free software!&lt;/p&gt;
 </description>
 <enclosure>
 
