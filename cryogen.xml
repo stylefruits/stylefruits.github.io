@@ -1,18 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <rss version='2.0' xmlns:atom='http://www.w3.org/2005/Atom'>
 <channel>
-<atom:link href='https://stylefruits.github.io' rel='self' type='application/rss+xml'/>
+<atom:link href='http://blog.stylefruits.tech/' rel='self' type='application/rss+xml'/>
 <title>
 stylefruits tech
 </title>
 <link>
-https://stylefruits.github.io
+http://blog.stylefruits.tech/
 </link>
 <description>
-This blog is awesome
+stylefruits tech
 </description>
 <lastBuildDate>
-Mon, 01 Feb 2016 16:04:38 +0100
+Tue, 02 Feb 2016 09:26:51 +0100
 </lastBuildDate>
 <generator>
 clj-rss
