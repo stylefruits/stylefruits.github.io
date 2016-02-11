@@ -12,7 +12,7 @@ http://blog.stylefruits.tech/
 stylefruits tech
 </description>
 <lastBuildDate>
-Tue, 02 Feb 2016 09:26:51 +0100
+Thu, 11 Feb 2016 09:05:34 +0100
 </lastBuildDate>
 <generator>
 clj-rss
@@ -245,7 +245,7 @@ Requests in Batches
 &amp;#32;&amp;#32;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;As the attentive reader will notice, some problems we built Rib for could have been addressed with Facebook's &lt;a href='https://github.com/facebook/graphql'&gt;GraphQL&lt;/a&gt;. Why then didn't we implement a GraphQL façade for our API? The answer is chronology; when GraphQL was announced Rib was already serving production traffic.&lt;/p&gt;&lt;h2&gt;&lt;a name=&quot;the&amp;#95;paint&amp;#95;is&amp;#95;still&amp;#95;wet&quot;&gt;&lt;/a&gt;The paint is still wet&lt;/h2&gt;&lt;p&gt;It appears that we've found a solution for our latency problems. Sending a round of requests, waiting for all the responses, extracting data from the returned JSON payloads, and finally executing dependent requests took an unbearably long time. Rib can do all of this in a single go. Automatic parallelisation of independent requests is icing on the cake.&lt;/p&gt;&lt;p&gt;Rib is still in its early days. We've been running it on production for a couple of months now and we're pleased with results we've seen. We have some initial use cases implemented in terms of batched Rib requests, but we need to collect more data and see how far we can push our new tool.&lt;/p&gt;&lt;p&gt;As a closing remark, it's worth mentioning that we implemented Rib in Erlang, but that's material for a whole another article. Have an eye on our blog for more on this topic.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Update (2016-01-15):&lt;/strong&gt; We &lt;a href='http://blog.stylefruits.tech/posts/2016-01-15-rib-goes-open-source.html'&gt;released Rib&lt;/a&gt; as free software!&lt;/p&gt;
+&lt;p&gt;As the attentive reader will notice, some problems we built Rib for could have been addressed with Facebook's &lt;a href='https://github.com/facebook/graphql'&gt;GraphQL&lt;/a&gt;. Why then didn't we implement a GraphQL façade for our API? The answer is chronology; when GraphQL was announced Rib was already serving production traffic.&lt;/p&gt;&lt;h2&gt;&lt;a name=&quot;the&amp;#95;paint&amp;#95;is&amp;#95;still&amp;#95;wet&quot;&gt;&lt;/a&gt;The paint is still wet&lt;/h2&gt;&lt;p&gt;It appears that we've found a solution for our latency problems. Sending a round of requests, waiting for all the responses, extracting data from the returned JSON payloads, and finally executing dependent requests took an unbearably long time. Rib can do all of this in a single go. Automatic parallelisation of independent requests is icing on the cake.&lt;/p&gt;&lt;p&gt;Rib is still in its early days. We've been running it on production for a couple of months now and we're pleased with results we've seen. We have some initial use cases implemented in terms of batched Rib requests, but we need to collect more data and see how far we can push our new tool.&lt;/p&gt;&lt;p&gt;As a closing remark, it's worth mentioning that we implemented Rib in Erlang, but that's material for a whole another article. Have an eye on our blog for more on this topic.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Update (2016-02-01):&lt;/strong&gt; We &lt;a href='http://blog.stylefruits.tech/posts/2016-02-01-rib-goes-open-source.html'&gt;released Rib&lt;/a&gt; as free software!&lt;/p&gt;
 </description>
 <enclosure>
 
