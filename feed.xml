@@ -12,11 +12,31 @@ http://blog.stylefruits.tech/
 stylefruits tech
 </description>
 <lastBuildDate>
-Mon, 15 Feb 2016 09:02:15 +0100
+Fri, 22 Apr 2016 10:27:11 +0200
 </lastBuildDate>
 <generator>
 clj-rss
 </generator>
+<item>
+<guid>
+http://blog.stylefruits.tech/posts/2016-04-21-gniazdo-1.0.0.html
+</guid>
+<link>
+http://blog.stylefruits.tech/posts/2016-04-21-gniazdo-1.0.0.html
+</link>
+<title>
+Announcement: gniazdo 1.0.0
+</title>
+<description>
+&lt;p&gt;We're proud to announce that &lt;a href='https://github.com/stylefruits/gniazdo'&gt;gniazdo&lt;/a&gt;, our Clojure WebSocket client library, has learned to ride a metaphorical bike and is now available in version 1.0.0!&lt;/p&gt;&lt;p&gt;There should be no breaking changes compared to 0.4.1 except for our decision to drop support for Java ≤ 7 to accomodate the latest version of Jetty's websocket-client.&lt;/p&gt;&lt;p&gt;Get it while it's hot and tell us what you think!&lt;/p&gt;
+</description>
+<enclosure>
+
+</enclosure>
+<pubDate>
+Thu, 21 Apr 2016 00:00:00 +0200
+</pubDate>
+</item>
 <item>
 <guid>
 http://blog.stylefruits.tech/posts/2016-02-01-rib-goes-open-source.html
