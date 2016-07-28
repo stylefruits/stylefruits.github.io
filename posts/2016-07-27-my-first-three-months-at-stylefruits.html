@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>stylefruits tech: My first three months at stylefruits</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href='/fonts/fonts.css' rel='stylesheet' type='text/css'>
+  <style type='text/css'>
+
+html {
+  margin: 0 auto;
+  max-width: 45em;
+  width: 95%;
+  overflow-x: hidden;
+  font-size: 13pt;
+  font-family: 'PT Serif', serif;
+  color: #485c64;
+}
+
+a {
+  color: #AE2431;
+}
+
+section.preview {
+  padding-bottom: 2em;
+}
+
+section.preview img {
+  width: 100%;
+}
+
+section.preview h1 a {
+  text-decoration: none;
+  color: #485c64;
+}
+
+section.preview section.continue {
+  width: 100%;
+  text-align: right;
+}
+
+article img {
+  width: 150%;
+  margin: 0 -25%;
+}
+
+footer {
+  margin: 3em 0 2em;
+  background: url("/img/lambda.svg") no-repeat;
+  background-position: 50% 80%;
+  background-size: 1.5em;
+}
+
+footer > a {
+  display: block;
+  margin: 0 auto;
+  height: 2em;
+  width: 2em;
+}
+
+h1 {
+  text-align: center;
+  margin: 1em 0 0.5em;
+}
+
+section.by, aside.image-attr, section.at {
+  color: #888888;
+  text-align: center;
+  font-style: italic;
+  margin: 0 auto 1em;
+}
+
+header {
+  background: url("/img/logo.svg") no-repeat;
+  background-size: contain;
+  max-width: 24em;
+  width: 90%;
+  margin: 2em auto 1em;
+  height: 3em;
+}
+
+@media (min-width:360px) {
+  header {
+    margin: 3em auto 1em;
+    height: 5em;
+  }
+}
+
+header a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+header a span {
+  display: none;
+}
+
+section.tldr {
+  background: url("/img/tldr.svg") no-repeat;
+  background-size: 5em;
+  background-position: 0 1em;
+  padding: 2.7em 0 0 0;
+  color: #888888;
+  border: solid 1px #cccccc;
+  border-left: none;
+  border-right: none;
+  min-height: 4em;
+}
+
+@media (min-width:550px) {
+  section.tldr {
+    background-position: 0 1.4em;
+    padding: 0 0 0 6em;
+    margin: 0 3em 0 3em;
+  }
+}
+
+label {
+  font-style: italic;
+  text-align: center;
+  padding-top: 0.5em;
+  display: block;
+  color: #888888;
+  font-size: small;
+}
+
+@media (min-width:600px) {
+  label {
+    margin: 0 3em 0 3em;
+    font-size: medium;
+  }
+}
+
+pre, code {
+  font-family: Inconsolata, monospace;
+}
+
+pre {
+  border: solid 1px #cccccc;
+  border-left: none;
+  border-right: none;
+  padding: 1em 0 1em 0;
+  font-size: small;
+}
+
+@media (min-width:600px) {
+  pre {
+    margin: 0 3em 0 3em;
+    font-size: medium;
+  }
+}
+
+pre {
+  color: #888888;
+}
+
+pre .kd {
+  color: #AE2431;
+  font-weight: 600;
+}
+
+pre .s, pre .s2, pre .nt, pre .mf, pre .mi {
+  color: #AE2431;
+}
+
+pre .p, pre .nb, pre .nv {
+  color: #485c64;
+}
+  </style>
+  <link rel="alternate" type="application/atom+xml" title="stylefruits tech" href="/feed.xml" />
+</head>
+<body>
+  <header>
+    <a href="/index.html">
+      <span>
+        stylefruits tech
+      </span>
+    </a>
+  </header>
+
+  
+<article>
+  <img class="banner"
+     src="https://zugspitzbahn.stylefruits.de/v1/images/4a88d064-4ff1-4ddd-9dff-6255494deec6"
+     alt="Ryan McGuire"
+     title="Ryan McGuire"/>
+<h1>My first three months at stylefruits</h1>
+<section class="by">
+  by <a href="https://twitter.com/_sohalt">Paolo Holinski</a>,
+  an&nbsp;engineer at&nbsp;stylefruits
+</section>
+<section class="tldr">
+  <p>
+  I recently joined the stylefruits backend team and am sharing my experience so far.
+  </p>
+</section>
+<section>
+  
+  <p>Three months have passed since I joined stylefruits as a Working Student<a href='#fn-1' id='fnref1'><sup>1</sup></a> as an addition to their backend team &mdash; and, oh boy, have those three months passed swiftly. Tomorrow will sadly already be my last day &mdash; at least for the time being &mdash; as I'll be going abroad on a student exchange this winter semester, so this post should serve as a short writeup of my experiences, meant to ease the onboarding for any new faces joining the team. I'd also like to give a bit of an impression of what it is like to work here for people who are currently looking around for interesting jobs and considering stylefruits as one of their choices.</p><p><!&ndash;more&ndash;></p><p>As you might have already guessed I'm pretty happy with working at stylefruits. The main motivator for me, leading to me applying at stylefruits, was their interesting technology stack, namely lots and lots of Clojure and ClojureScript. I am vastly interested in functional programming in general and Clojure in particular, as that was the language that introduced me to this wonderful programming paradigm. As such I have a good amount of personal experience with Clojure, writing various hobby projects and tinkering with different libraries. But you can only get so far as a single developer, writing code in your free time. What I sought was an opportunity to write Clojure in production, learning to employ the language in a real world setting, on a sizable codebase, and in a team of equally enthusiastic programmers to further my own abilities. Sadly, when I first began looking around for Clojure jobs, some 2&ndash;3 years ago, the Clojure landscape in Germany looked pretty grim, especially since I was not yet living in Munich at that time. Revisiting my pursuit three months ago, stylefruits presented a fitting opportunity. I applied. From that thing followed another and a week later I started.</p><p>Now onto my actual experience working at stylefruits. The technology team (mobile/frontend, backend, ops, QA, and management) is pleasantly small and consists of delightful people. I didn't have any work experience in programming before, apart from an internship where I wasn't tightly integrated into a team and mostly worked on my own, so in the beginning it took me some time to adjust to the workflow. Setting up all necessary communications channels, cloning all the relevant repositories (there is a collection of different internal services for different tasks), exploring the existing codebase, and figuring out what to work on. During every one of these stages everybody was super helpful and whenever I had a question someone was available to answer. Continuous integration tests and code reviews made me confident in making changes and soon enough everything turned into a habit. In general the process of working with CI and constant code review was extremely satisfying, as this is something you often don't get for a personal project because it is to much of a hurdle to set up and you don't always have someone to look over your code. Of course everything has its ups and downs, as the saying goes. There were times, when I got stuck chasing a bug through seemingly abysmal stacktraces, or running into a dead end because I misinterpreted some variable's<a href='#fn-2' id='fnref2'><sup>2</sup></a> name. But those moments were rare enough to not spoil the fun. And of course there was always a helping hand when I needed it, or someone to share the pain of some stupid mistake.</p><p>I first worked on the application serving up the public REST API, that gets used by the mobile clients and the website, which is one of the older and larger codebases, yet already 100% Clojure. I implemented a new endpoint which entailed getting to know all parts of the system, querying from different databases (which was nicely abstracted for already existing data), performing all sorts of validation, assembling a response and returning it back to the client. At the core of that pipeline is a collection of protocols, specifying the different datasources using <code>plumatic/schema</code>, which aids significantly in refactoring and helps decouple different parts of the system, allowing the swapping of implementations with mockups for unit testing. With this large project I could really get a feel of the scope of a serious Clojure project and see the iterations it has undergone during development, all while maintaining good shape, thanks to a well-considered architecture and a powerful language to express that architecture concisely. After that I got to help build a smaller internal tool for administrative purposes from scratch, which meant free choice of technology and room for experimentation. We wrote the UI in ClojureScript using <code>figwheel</code>, <code>reagent</code> and <code>re-frame</code>, which turned out quite pleasant. I realized I prefer not having to deal with CSS and the single threaded nature of JavaScript<a href='#fn-3' id='fnref3'><sup>3</sup></a>, but it was a valuable exercise nonetheless. Additionally to work, I have to mention the after-work activities: the occasional games night, where the company gets together to play all kinds of different games (video games, board games, sport/dancing games, etc.) as well as the “How stuff works” talks held by some departments, briefly introducing the rest of the company to an area of their expertise.</p><p>Overall I can say that I had a blast writing Clojure for production use, in a very pleasant environment, while simultaneously learning exciting new stuff. I'm already looking forward to working here again, after I have returned from my exchange.</p><p>So long,</p><p>Paolo<h2></h2></p><ol class='footnotes'><li id='fn-1'>Meaning working part time, while studying CS at TUM.<a href='#fnref1'>&#8617;</a></li><li id='fn-2'>I probably should say <code>Symbol</code> to be more precise, but you get the point.<a href='#fnref2'>&#8617;</a></li><li id='fn-3'>Although <code>core.async</code> and the signal/event system of <code>re-frame</code> relieve the pain as much as possible.<a href='#fnref3'>&#8617;</a></li></ol>
+</section>
+
+
+<aside class="image-attr">
+  Header image: <a href="http://gratisography.com">Ryan McGuire</a>
+</aside>
+
+<section class="at">
+  Posted on July 27, 2016.
+</section>
+
+</article>
+
+
+  <footer>
+    <a href="/index.html"></a>
+  </footer>
+  </div>
+</body>
+</html>
